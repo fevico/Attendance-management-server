@@ -1,4 +1,4 @@
-import { compare, hash } from "bcrypt";
+import {hashSync, compareSync, genSaltSync} from "bcrypt";
 import { model, Model, Schema } from "mongoose";
 
 interface AuthDocument extends Document{
@@ -10,11 +10,12 @@ interface AuthDocument extends Document{
 }
 
 
-interface UserMethods {
-    comparePassword(password: string): Promise<boolean>;
-  }
 
-const authSchema = new Schema<AuthDocument, Model<AuthDocument>, UserMethods>({
+interface Methods{
+  compare(token: string): boolean
+}
+
+const authSchema = new Schema<AuthDocument,{}, Methods>({
     name:{type: String, required: true},
     email:{type: String, required: true, unique: true},
     password:{type: String, required: true},
@@ -22,19 +23,18 @@ const authSchema = new Schema<AuthDocument, Model<AuthDocument>, UserMethods>({
     regNumber:{type: String, unique: true}// matricNumber is set to default to 0000000000 because it is required but not used for students
 }, {timestamps: true});
 
-authSchema.pre('save', async function (next) {
-    // Hash the password
-    if (this.isModified("password")) {
-      this.password = await hash(this.password, 10);
-    }
-    next();
-  });
-  
-  authSchema.methods.comparePassword = async function (password) {
-    const result = await compare(password, this.password);
-    return result;
-  };
+authSchema.pre('save', function(next) {
+  if(this.isModified('password')){
+      const salt = genSaltSync(10)
+      this.password = hashSync(this.password, salt)
+  }
+  next()
+})
+
+authSchema.methods.compare = function(password) {
+ return compareSync(password, this.password)
+}
 
   const authModel = model("Auth", authSchema);
 
-  export default authModel;
+  export default authModel as Model<AuthDocument, {}, Methods>;
