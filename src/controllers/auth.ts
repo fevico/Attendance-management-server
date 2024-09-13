@@ -56,7 +56,7 @@ export const login: RequestHandler = async (req, res) => {
     }
 
     // Check if the provided password is correct
-    const isPasswordCorrect = await user.comparePassword(password);
+    const isPasswordCorrect = await user.compare(password);
     if (!isPasswordCorrect) {
       return res.status(400).send("Password incorrect");
     }
