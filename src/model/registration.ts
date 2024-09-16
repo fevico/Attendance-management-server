@@ -6,11 +6,15 @@ interface RegistrationDocument extends Document {
     courseId: CourseDocument;
     attendanceMarked: boolean; // To track if attendance is marked
     attendedAt?: Date; // Optional, time of attendance
+    studentName: string;
+    courseName: string
 }
 
 const registrationSchema = new Schema<RegistrationDocument>({
     studentId: { type: Schema.Types.ObjectId, ref: 'User', required: true },
     courseId: { type: Schema.Types.ObjectId, ref: 'Course', required: true },
+    studentName: { type: String, required: true },
+    courseName: { type: String, required: true },
     attendanceMarked: { type: Boolean, default: false },
     attendedAt: { type: Date }, // Optional field to store the time of attendance
 }, { timestamps: true });

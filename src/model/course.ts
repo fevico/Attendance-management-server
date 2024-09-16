@@ -4,7 +4,6 @@ export interface CourseDocument{
     name: string;
     code: string;
     credits: number;
-    students: ObjectId[];
     lecturerId: ObjectId;
     qrCode: string
     startTime: Date;
@@ -24,10 +23,10 @@ const course = new Schema <CourseDocument>({
         type: Number,
         required: true
     },
-    students: {
-        type: [Schema.Types.ObjectId],
-        ref: 'User',
-    },    
+    // students: {
+    //     type: [Schema.Types.ObjectId],
+    //     ref: 'User',
+    // },    
     lecturerId: {
         type: Schema.Types.ObjectId, ref: "User"
     },

@@ -31,7 +31,7 @@ export const create: RequestHandler = async (req, res) => {
     const createUser = new authModel({ email, password, name, regNumber });
     await createUser.save();
 
-    return res.json(createUser);
+    return res.json({name: createUser.name, regNumber: createUser.regNumber, email: createUser.email});
   } catch (error) {
     return res.status(500).send("Server error");
   }
@@ -43,16 +43,11 @@ export const login: RequestHandler = async (req, res) => {
     const { email, password, regNumber } = req.body;
 
     // Find the user by either regNumber or email
-    const user = await authModel.findOne({
-      $or: [
-        { email: email },
-        { regNumber: regNumber }
-      ]
-    });
+    const user = await authModel.findOne({email});
 
     // If no user is found, return an error response
     if (!user) {
-      return res.status(401).send("Invalid email or regNumber");
+      return res.status(401).send("invalid email address");
     }
 
     // Check if the provided password is correct

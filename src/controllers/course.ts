@@ -1,5 +1,6 @@
 import { RequestHandler } from "express";
 import QRCode from "qrcode";
+import authModel from "src/model/auth";
 import courseModel, { CourseDocument } from "src/model/course";
 import registrationModel from 'src/model/registration'; // Adjust path accordingly
 
@@ -20,7 +21,6 @@ export const createCourse: RequestHandler = async (req, res) => {
         // Save the course to the database
 
         // Generate QR code data
-        // const qrData = `http://yourapp.com/attendance?courseId=${newCourse._id}&lecturerId=${courseLecturer}&courseName=${courseName}&courseCode=${courseCode}`;
         const qrData = `http://localhost:3002/attendance?courseId=${newCourse._id}&lecturerId=${code}&courseName=${name}&courseCode=${code}`;
         newCourse.qrCode = qrData;
 
@@ -133,71 +133,21 @@ export const getStudentCourses: RequestHandler = async (req, res) => {
 };
 
 
-
-// Route for marking attendance
-// export const markAttendance: RequestHandler = async (req, res) => {
-//     const { courseId } = req.query;
-//     const studentId = req.query.studentId as string; // Ensure it's treated as a string
-
-
-//     try {
-//         // Verify if the student is registered for the course
-//         const course = await courseModel.findById(courseId);
-
-//         const studentObjectId = new Types.ObjectId(studentId);
-
-
-//         if (!course || !course.students.some(student => student.equals(studentObjectId))) {
-//             return res.status(400).json({ message: "Student not registered for this course" });
-//         }
-        
-//         // Verify the time of attendance
-//         const now = new Date();
-//         if (now < course.startTime || now > course.endTime) {
-//             return res.status(400).json({ message: "Attendance time not valid" });
-//         }
-
-//         // Assuming there's an attendance schema or subdocument inside the course model
-//         course.attendance.push({ studentId, attendedAt: now });
-//         await course.save();
-
-//         res.json({ message: "Attendance marked successfully" });
-//     } catch (error) {
-//         res.status(500).json({ message: "Error marking attendance", error });
-//     }
-// };
-
-
-export const markAttendance : RequestHandler = async (req, res) => {
-    const { courseId, studentId } = req.query;
+export const registerCourse: RequestHandler = async (req, res) => {
+    const { courseId } = req.body;
+    const studentId = req.user.id
+    console.log(courseId, studentId)
 
     try {
-        // Find the registration record
-        const registration = await registrationModel.findOne({
-            studentId,
-            courseId
-        });
+        const course = await courseModel.findById(courseId);
+        const student = await authModel.findById(studentId);
 
-        // Check if registration exists
-        if (!registration) {
-            return res.status(400).json({ message: "Student not registered for this course" });
+        if (!course || !student) {
+            return res.status(404).json({ message: 'Course or student not found' });
         }
-
-        // Check if attendance is already marked
-        if (registration.attendanceMarked) {
-            return res.status(400).json({ message: "Attendance already marked for this course" });
-        }
-
-        // Mark attendance
-        registration.attendanceMarked = true;
-        registration.attendedAt = new Date();
-
-        // Save updated registration
-        await registration.save();
-
-        res.json({ message: "Attendance marked successfully" });
-    } catch (error) {
-        res.status(500).json({ message: 'Error marking attendance', error });
+        await registrationModel.create({ studentId, courseId, studentName: student.name, courseName: course.name });
+        res.status(201).json({ message: 'Course registered successfully' });
+    }catch(error){
+        res.status(500).json({ message: 'Error registering course', error });
     }
-};
-
+}

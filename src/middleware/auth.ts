@@ -33,7 +33,7 @@ export const mustAuth: RequestHandler = async (req, res, next) => {
 
       // Depending on the role, fetch user, doctor, or admin details
       const user = await authModel.findById({_id: id});
-      if(!user) return res.status(403).json({error: "Unauthoried request! "});
+      if(!user) return res.status(403).json({error: "Unauthorized request! "});
       req.user = {
         id: user._id.toString(),
         name: user.name,  
