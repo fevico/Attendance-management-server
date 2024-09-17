@@ -7,9 +7,16 @@ import courseRouter from './routes/course';
 import swaggerUi from "swagger-ui-express";
 import swaggerJsDoc from "swagger-jsdoc";
 import options from './swagger';
+import cors from 'cors';
 
 
 const app = express();
+app.use(
+  cors({
+    origin: "*",
+    credentials: false,
+  })
+);
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
