@@ -63,7 +63,7 @@ export const login: RequestHandler = async (req, res) => {
     );
 
     // Send the token in the response
-    return res.json({ token });
+    return res.json({ token, role: user.role });
   } catch (error) {
     // Handle any other errors
     console.error("Login error:", error);
