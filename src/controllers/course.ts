@@ -5,7 +5,7 @@ import courseModel, { CourseDocument } from "src/model/course";
 import registrationModel from 'src/model/registration'; // Adjust path accordingly
 
 export const createCourse: RequestHandler = async (req, res) => {
-    const { name, unit, code, credits } = req.body;
+    const { name, unit, code, credits, startTime, endTime } = req.body;
 
     try {
         // Create a new course in the database
@@ -14,6 +14,8 @@ export const createCourse: RequestHandler = async (req, res) => {
             code,
             unit,
             credits,
+            startTime,
+            endTime,
             // duration: courseDuration,
             // lecturerId: courseLecturer,
         });
