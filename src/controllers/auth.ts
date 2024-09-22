@@ -18,7 +18,7 @@ const generateMatricNumber = async () => {
 
 export const create: RequestHandler = async (req, res) => {
   try {
-    const { email, password, name } = req.body;
+    const { email, password, name, role } = req.body;
 
     // Check if the user already exists
     const user = await authModel.findOne({ email });
@@ -28,10 +28,10 @@ export const create: RequestHandler = async (req, res) => {
     const regNumber = await generateMatricNumber();
 
     // Create the user
-    const createUser = new authModel({ email, password, name, regNumber });
+    const createUser = new authModel({ email, password, name, regNumber, role });
     await createUser.save();
 
-    return res.json({name: createUser.name, regNumber: createUser.regNumber, email: createUser.email});
+    return res.json({name: createUser.name, regNumber: createUser.regNumber, email: createUser.email, role: createUser.role});
   } catch (error) {
     return res.status(500).send("Server error");
   }
