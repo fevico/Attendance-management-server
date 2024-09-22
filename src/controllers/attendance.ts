@@ -1,11 +1,14 @@
 import { RequestHandler } from "express";
 import attendanceModel from "src/model/attendance";
+import authModel from "src/model/auth";
 import registrationModel from "src/model/registration";
 
 export const markAttendance: RequestHandler = async (req, res) => {
     const { courseId, studentId } = req.query;
 
     try {
+        const student = await authModel.findById(studentId);
+        if(!student) return res.status(400).json({ message: "Student not found" });
         // Find the registration record
         const registration = await registrationModel.findOne({
             studentId,
@@ -37,6 +40,7 @@ export const markAttendance: RequestHandler = async (req, res) => {
             courseId,
             studentName: registration.studentName,
             courseName: registration.courseName,
+            regNumber: student.regNumber
         });
 
         await newAttendance.save();
