@@ -23,7 +23,7 @@ export const createCourse: RequestHandler = async (req, res) => {
         // Save the course to the database
 
         // Generate QR code data
-        const qrData = `http://localhost:3002/attendance?courseId=${newCourse._id}&lecturerId=${code}&courseName=${name}&courseCode=${code}`;
+        const qrData = `https://attendance-management-server-g57k.onrender.com/attendance?courseId=${newCourse._id}&lecturerId=${code}&courseName=${name}&courseCode=${code}`;
         newCourse.qrCode = qrData;
 
         await newCourse.save();

@@ -4,7 +4,7 @@ import { mustAuth } from "src/middleware/auth";
 
 const attendanceRouter = Router()
 
-attendanceRouter.post('/attendance', mustAuth, markAttendance);
+attendanceRouter.post('/', mustAuth, markAttendance);
 
 
 export default attendanceRouter

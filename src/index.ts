@@ -8,6 +8,7 @@ import swaggerUi from "swagger-ui-express";
 import swaggerJsDoc from "swagger-jsdoc";
 import options from './swagger';
 import cors from 'cors';
+import attendanceRouter from './routes/attendance';
 
 
 const app = express();
@@ -29,6 +30,7 @@ app.get('/', (req, res) => {
 
 app.use('/auth', authRouter);
 app.use('/course', courseRouter);
+app.use('/attendance', attendanceRouter);
 
 const spec = swaggerJsDoc(options);
 app.use("/api", swaggerUi.serve, swaggerUi.setup(spec));
