@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { createCourse, getStudentCourses, registerCourse } from "src/controllers/course";
+import { createCourse, getAllCourses, getStudentCourses, registerCourse } from "src/controllers/course";
 import { mustAuth } from "src/middleware/auth";
 
 const courseRouter = Router()
@@ -7,6 +7,7 @@ const courseRouter = Router()
 courseRouter.post('/create', createCourse)
 courseRouter.get('/student/courses', mustAuth, getStudentCourses)
 courseRouter.post('/student/course/registration', mustAuth, registerCourse)
+courseRouter.get('/courses', mustAuth, getAllCourses)
 
 export default courseRouter;
 
@@ -240,3 +241,34 @@ export default courseRouter;
  *                   example: "Error registering course"
  */
 
+
+/**
+ * @swagger
+ * /course/courses:
+ *   get:
+ *     summary: Fetch all courses
+ *     description: Returns a list of courses with their name, id, and code
+ *     tags:
+ *       - Courses
+ *     responses:
+ *       200:
+ *         description: A list of courses
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 type: object
+ *                 properties:
+ *                   _id:
+ *                     type: string
+ *                     example: "625f25f6328d9f3b8a1b5a1d"
+ *                   name:
+ *                     type: string
+ *                     example: "Introduction to Computer Science"
+ *                   code:
+ *                     type: string
+ *                     example: "CS101"
+ *       500:
+ *         description: Internal Server Error
+ */  

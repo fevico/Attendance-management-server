@@ -61,6 +61,18 @@ export const getCourse: RequestHandler = async (req, res) => {
     }
 }
 
+export const getAllCourses: RequestHandler = async (req, res) => {
+    try {
+        const course = await courseModel.find();
+        if(!course) {
+            return res.status(404).json({ message: 'No courses found' });
+        }
+        res.json({course});
+    } catch (error) {
+        res.status(500).json({ message: 'Error getting courses', error });
+    }
+}
+
 // Route for student to see courses and QR codes
 // export const getStudentCourses: RequestHandler = async (req, res) => {
 //     const studentId = req.user.id; // Assuming user authentication
