@@ -150,7 +150,6 @@ export const getStudentCourses: RequestHandler = async (req, res) => {
 export const registerCourse: RequestHandler = async (req, res) => {
     const { courseId } = req.body;
     const studentId = req.user.id
-    console.log(courseId, studentId)
 
     try {
         const course = await courseModel.findById(courseId);

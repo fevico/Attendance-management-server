@@ -31,7 +31,13 @@ export const create: RequestHandler = async (req, res) => {
     const createUser = new authModel({ email, password, name, regNumber, role });
     await createUser.save();
 
-    return res.json({name: createUser.name, regNumber: createUser.regNumber, email: createUser.email, role: createUser.role});
+    // Generate a JWT token
+    const token = jwt.sign(
+      { userId: createUser._id, name: createUser.name },
+      process.env.JWT_SECRET as string
+    );
+
+    return res.json({name: createUser.name, regNumber: createUser.regNumber, email: createUser.email, role: createUser.role, token});
   } catch (error) {
     return res.status(500).send("Server error");
   }

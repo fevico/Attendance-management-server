@@ -1,10 +1,11 @@
 import { Router } from "express";
-import { markAttendance } from "src/controllers/attendance";
+import { getLecturerAttendance, markAttendance } from "src/controllers/attendance";
 import { mustAuth } from "src/middleware/auth";
 
 const attendanceRouter = Router()
 
 attendanceRouter.post('/', mustAuth, markAttendance);
+attendanceRouter.get('/lecturer', mustAuth, getLecturerAttendance);
 
 
 export default attendanceRouter
@@ -73,3 +74,35 @@ export default attendanceRouter
  *                   type: string
  *                   example: "An error occurred on the server"
  */
+
+
+/**
+ * @swagger
+ * /attendance/lecturer:
+ *   get:
+ *     summary: Fetch all lecturer attendance
+ *     description: Returns a list of attendance for the lecturer
+ *     tags:
+ *       - Attendance
+ *     responses:
+ *       200:
+ *         description: A list of courses
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 type: object
+ *                 properties:
+ *                   _id:
+ *                     type: string
+ *                     example: "625f25f6328d9f3b8a1b5a1d"
+ *                   studentName:
+ *                     type: string
+ *                     example: "John Doe"
+ *                   RegNumber:
+ *                     type: string
+ *                     example: "CS101"
+ *       500:
+ *         description: Internal Server Error
+ */  

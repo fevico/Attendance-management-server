@@ -1,6 +1,7 @@
 import { RequestHandler } from "express";
 import attendanceModel from "src/model/attendance";
 import authModel from "src/model/auth";
+import courseModel from "src/model/course";
 import registrationModel from "src/model/registration";
 
 export const markAttendance: RequestHandler = async (req, res) => {
@@ -51,3 +52,19 @@ export const markAttendance: RequestHandler = async (req, res) => {
         res.status(500).json({ message: 'Error marking attendance', error });
     }
 };
+
+
+export const getLecturerAttendance: RequestHandler = async (req, res) => {
+    const lecturerId = req.user.id;
+    const user = await authModel.findById(lecturerId);
+    if (!user || user.role !== 'lecturer') return res.status(400).json({ message: 'Lecturer not found' });
+    try {
+        const course = await courseModel.findOne({ lecturerId });
+        if(!course) return res.status(400).json("No course found for this lecturer")
+        const attendance = await attendanceModel.find({ courseId: course._id });
+        if(!attendance) return res.status(400).json({ message: 'Attendance not found' });
+        res.json(attendance);
+    } catch (error) {
+        res.status(500).json({ message: 'Error getting attendance', error });
+    }
+}
