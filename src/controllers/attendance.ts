@@ -4,7 +4,8 @@ import authModel from "src/model/auth";
 import registrationModel from "src/model/registration";
 
 export const markAttendance: RequestHandler = async (req, res) => {
-    const { courseId, studentId } = req.query;
+    const { courseId } = req.query;
+    const studentId = req.user.id
 
     try {
         const student = await authModel.findById(studentId);

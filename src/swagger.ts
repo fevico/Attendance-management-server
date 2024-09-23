@@ -64,6 +64,19 @@ const options = {
                         
                     }
                 },
+                Attendance:{
+                    type: "object",
+                    required: ["courseId"],
+                    properties:{
+                        courseId:{ 
+                            type: "string",
+                            format: "name",
+                            default: "60f6a8b2d3b2a29b9c8e1234",
+                            description: "course id"
+                        },
+                        
+                    }
+                },
 
             },
 
@@ -108,6 +121,7 @@ const options = {
     apis:[ 
         "./src/routes/auth.ts",
         "./src/routes/course.ts",
+        "./src/routes/attendance.ts",
    ]
 };
 
