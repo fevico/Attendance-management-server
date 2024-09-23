@@ -7,7 +7,7 @@ const courseRouter = Router()
 courseRouter.post('/create', createCourse)
 courseRouter.get('/student/courses', mustAuth, getStudentCourses)
 courseRouter.post('/student/course/registration', mustAuth, registerCourse)
-courseRouter.get('/courses', mustAuth, getAllCourses)
+courseRouter.get('/courses', getAllCourses)
 
 export default courseRouter;
 

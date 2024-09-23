@@ -67,7 +67,7 @@ export const getAllCourses: RequestHandler = async (req, res) => {
         if(!course || course.length === 0) {
             return res.status(404).json({ message: 'No courses found' });
         }
-        return res.json({course});
+         res.json({course});
     } catch (error) {
         res.status(500).json({ message: 'Error getting courses', error });
     }
