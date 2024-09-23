@@ -64,10 +64,10 @@ export const getCourse: RequestHandler = async (req, res) => {
 export const getAllCourses: RequestHandler = async (req, res) => {
     try {
         const course = await courseModel.find();
-        if(!course) {
+        if(!course || course.length === 0) {
             return res.status(404).json({ message: 'No courses found' });
         }
-        res.json({course});
+        return res.json({course});
     } catch (error) {
         res.status(500).json({ message: 'Error getting courses', error });
     }
