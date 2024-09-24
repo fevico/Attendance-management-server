@@ -6,7 +6,7 @@ import registrationModel from 'src/model/registration'; // Adjust path according
 
 export const createCourse: RequestHandler = async (req, res) => {
     const { name, unit, code, credits, startTime, endTime } = req.body;
-    const lecturerId = req.user.id;
+     const lecturerId = req.user.id;
 
     try {
         // Check if startTime and endTime are provided
@@ -29,11 +29,11 @@ export const createCourse: RequestHandler = async (req, res) => {
             credits,
             startTime: fullStartTime, // Store the full Date object
             endTime: fullEndTime,
-            lecturerId
+             lecturerId
         });
 
         // Generate QR code data
-        const qrData = `https://attendance-management-server-g57k.onrender.com/attendance?courseId=${newCourse._id}&courseName=${name}&courseCode=${code}&lecturerId=${lecturerId}`;
+        const qrData = `https://attendance-management-server-g57k.onrender.com/attendance?courseId=${newCourse._id}&courseName=${name}&courseCode=${code}`;
         newCourse.qrCode = qrData;
 
         // Save the course to the database
@@ -49,6 +49,7 @@ export const createCourse: RequestHandler = async (req, res) => {
             qrCode: qrCodeUrl,
         });
     } catch (error) {
+        console.log(error)
         res.status(500).json({ message: 'Error creating course', error });
     }
 };
