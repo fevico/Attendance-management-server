@@ -4,7 +4,7 @@ import { mustAuth } from "src/middleware/auth";
 
 const courseRouter = Router()
 
-courseRouter.post('/create', mustAuth, createCourse)
+courseRouter.post('/create', createCourse)
 courseRouter.get('/student/courses', mustAuth, getStudentCourses)
 courseRouter.post('/student/course/registration', mustAuth, registerCourse)
 courseRouter.get('/courses', getAllCourses)

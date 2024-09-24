@@ -6,7 +6,7 @@ import registrationModel from 'src/model/registration'; // Adjust path according
 
 export const createCourse: RequestHandler = async (req, res) => {
     const { name, unit, code, credits, startTime, endTime } = req.body;
-     const lecturerId = req.user.id;
+    //  const lecturerId = req.user.id;
 
     try {
         // Check if startTime and endTime are provided
@@ -29,7 +29,7 @@ export const createCourse: RequestHandler = async (req, res) => {
             credits,
             startTime: fullStartTime, // Store the full Date object
             endTime: fullEndTime,
-             lecturerId
+            //  lecturerId
         });
 
         // Generate QR code data
