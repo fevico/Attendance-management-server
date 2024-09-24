@@ -10,9 +10,9 @@ export const createCourse: RequestHandler = async (req, res) => {
 
     try {
         // Check if startTime and endTime are provided
-        if (!startTime || !endTime) {
-            return res.status(400).json({ message: "Start time and end time are required" });
-        }
+        // if (!startTime || !endTime) {
+        //     return res.status(400).json({ message: "Start time and end time are required" });
+        // }
 
         // Get the current date to combine with the time from the frontend
         const currentDate = new Date().toISOString().split('T')[0]; // e.g., '2024-09-23'
@@ -27,8 +27,8 @@ export const createCourse: RequestHandler = async (req, res) => {
             code,
             unit,
             credits,
-            startTime: fullStartTime, // Store the full Date object
-            endTime: fullEndTime,
+            // startTime: fullStartTime, // Store the full Date object
+            // endTime: fullEndTime,
             //  lecturerId
         });
 
