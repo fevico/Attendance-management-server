@@ -33,7 +33,7 @@ export const createCourse: RequestHandler = async (req, res) => {
         });
 
         // Generate QR code data
-        const qrData = `https://attendance-management-system-1dwj.vercel.app/student?courseId=${newCourse._id}&courseName=${name}&courseCode=${code}&lecturerId=${lecturerId}`;
+        const qrData = `https://attendance-management-server-g57k.onrender.com/attendance?courseId=${newCourse._id}&courseName=${name}&courseCode=${code}&lecturerId=${lecturerId}`;
         newCourse.qrCode = qrData;
 
         // Save the course to the database
