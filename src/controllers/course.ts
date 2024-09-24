@@ -6,26 +6,37 @@ import registrationModel from 'src/model/registration'; // Adjust path according
 
 export const createCourse: RequestHandler = async (req, res) => {
     const { name, unit, code, credits, startTime, endTime } = req.body;
+    const lecturerId = req.user.id;
 
     try {
+        // Check if startTime and endTime are provided
+        if (!startTime || !endTime) {
+            return res.status(400).json({ message: "Start time and end time are required" });
+        }
+
+        // Get the current date to combine with the time from the frontend
+        const currentDate = new Date().toISOString().split('T')[0]; // e.g., '2024-09-23'
+
+        // Combine the date with the startTime and endTime received from the frontend
+        const fullStartTime = new Date(`${currentDate}T${startTime}:00.000Z`); // e.g., '2024-09-23T14:30:00.000Z'
+        const fullEndTime = new Date(`${currentDate}T${endTime}:00.000Z`);     // e.g., '2024-09-23T16:30:00.000Z'
+
         // Create a new course in the database
         const newCourse = new courseModel({
             name,
             code,
             unit,
             credits,
-            startTime,
-            endTime,
-            // duration: courseDuration,
-            // lecturerId: courseLecturer,
+            startTime: fullStartTime, // Store the full Date object
+            endTime: fullEndTime,
+            lecturerId
         });
 
-        // Save the course to the database
-
         // Generate QR code data
-        const qrData = `https://attendance-management-server-g57k.onrender.com/attendance?courseId=${newCourse._id}&lecturerId=${code}&courseName=${name}&courseCode=${code}`;
+        const qrData = `https://attendance-management-system-1dwj.vercel.app/student?courseId=${newCourse._id}&courseName=${name}&courseCode=${code}&lecturerId=${lecturerId}`;
         newCourse.qrCode = qrData;
 
+        // Save the course to the database
         await newCourse.save();
 
         // Generate the QR code
@@ -41,6 +52,7 @@ export const createCourse: RequestHandler = async (req, res) => {
         res.status(500).json({ message: 'Error creating course', error });
     }
 };
+
 
 
 export const getCourse: RequestHandler = async (req, res) => {
@@ -105,16 +117,14 @@ export const getAllCourses: RequestHandler = async (req, res) => {
 //         res.status(500).json({ message: 'Error fetching student courses', error });
 //     }
 // }
-
-
 export const getStudentCourses: RequestHandler = async (req, res) => {
     const studentId = req.user.id; // Assuming authentication provides this
-    const now = new Date();
+    const now = new Date(); // Current time (local or UTC)
 
     try {
         // Fetch registrations for the student and populate course details
         const registrations = await registrationModel.find({ studentId })
-        .populate('courseId') as { courseId: CourseDocument }[]; // Ensure this populates the course details
+            .populate('courseId') as { courseId: CourseDocument }[]; // Ensure this populates the course details
 
         // If no registrations found
         if (!registrations.length) {
@@ -124,19 +134,19 @@ export const getStudentCourses: RequestHandler = async (req, res) => {
         // Extract the courses from the registrations
         const courses = registrations.map(registration => registration.courseId);
 
-        // Define time ranges for filtering
-        const fifteenMinutesBefore = new Date(now.getTime() - 15 * 60000); // 15 minutes before current time
-        const tenMinutesAfter = new Date(now.getTime() + 10 * 60000); // 10 minutes after current time
-
-        // Filter courses based on the time range
+        // Filter courses based on original startTime and endTime in UTC
         const filteredCourses = courses.filter(course => {
-            return now >= new Date(course.startTime.getTime() - 15 * 60000) && // 15 minutes before start time
-                   now <= new Date(course.startTime.getTime() + 10 * 60000); // 10 minutes after start time
+            const startTimeUTC = new Date(course.startTime).getTime();  // Convert start time to UTC timestamp
+            const endTimeUTC = new Date(course.endTime).getTime();      // Convert end time to UTC timestamp
+            const currentTimeUTC = new Date(now.toISOString()).getTime();  // Convert current time to UTC timestamp
+
+            // Ensure current time is between startTime and endTime
+            return currentTimeUTC >= startTimeUTC && currentTimeUTC <= endTimeUTC;
         });
 
-        // If no upcoming courses found
+        // If no active courses found within the original time range
         if (filteredCourses.length === 0) {
-            return res.status(404).json({ message: "No courses found within the time range for this student" });
+            return res.status(404).json({ message: "No active courses found within the time range for this student" });
         }
 
         // Return filtered courses

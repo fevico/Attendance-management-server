@@ -5,7 +5,7 @@ interface AttendanceDoc{
     courseName: string
     studentId: ObjectId
     studentName: string
-    attendance: boolean
+    attendance: string
     attendedAt: Date
 }
 
@@ -14,7 +14,7 @@ const attendanceSchema = new Schema<AttendanceDoc>({
     courseName: { type: String, required: true },
     studentId: { type: Schema.Types.ObjectId, ref: 'Student' },
     studentName: { type: String, required: true },
-    attendance: { type: Boolean, required: true }, // true for present, false for absent
+    attendance: { type: String, enum: ['Present', 'Absent'], default: "Absent",}, // true for present, false for absent
     attendedAt: { type: Date, default: Date.now }
 }, {timestamps: true})
 

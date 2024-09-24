@@ -42,7 +42,8 @@ export const markAttendance: RequestHandler = async (req, res) => {
             courseId,
             studentName: registration.studentName,
             courseName: registration.courseName,
-            regNumber: student.regNumber
+            regNumber: student.regNumber,
+            attendance: "Present",
         });
 
         await newAttendance.save();
